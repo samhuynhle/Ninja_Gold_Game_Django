@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Nin-Gold Go!</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    </head>
+    <body>
+        <div class="row" style="padding: 15px 25px 0 25px;">
+            <div class="col">
+                <table class="border">
+                    <tr class="border">
+                        <th>Your Gold: </th>
+                        <th>{{ request.session.rounded_gold }}</th>
+                    </tr>
+                    <tr class="border">
+                        <th>Day: </th>
+                        <th>{{ request.session.game_tracker }}</th>
+                    </tr>
+                </table>
+                <form action="/rules" method="POST">
+                    {% csrf_token %}
+                    <input type="text" name="user_goal" placeholder="How much gold is your goal? Default is 500" style="width: 350px; display: {{ request.session.user_input_display }}">
+                    <input type="test" name="user_ending" placeholder="How many days would you like? Default is 15" style="width: 350px;display: {{ request.session.user_input_display }}">
+                    <input type="submit" class="btn btn-warning" style="display: {{ request.session.user_input_display }}"/>
+                </form>
+            </div>
+        </div>
+        <div class="row" style="margin-top: 25px; padding-left: 10%; padding-right: 10%;">
+            <div class="col border mx-3 rounded p-3">
+                <h4>Farm</h4>
+                <p>Go enjoy the time at the farm and earn some cash on the side! You could earn 15-30 gold!</p>
+                <form action="/farm" method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="work" value="farm"/>
+                    <input type="hidden" name="time_cost" value="1"/>
+                    <input type="submit" class="btn btn-warning" value="Go Farm!" style="display:{{ request.session.end_game }}"/>
+                </form>
+            </div>
+            <div class="col border mx-3 rounded p-3">
+                <h4>Cave</h4>
+                <p>Spend 3 days, hiking through treacherous terrain for the opportunity to earn bountiful gold! </p>
+                <form action="/cave" method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="get_gold" value="{{ random.randint }} "/>
+                    <input type="hidden" name="work" value="cave"/>
+                    <input type="hidden" name="time_cost" value="3"/>
+                    <input type="submit" class="btn btn-warning" value="To the Dungeons!" style="display:{{ request.session.end_game }}"/>
+                </form>
+            </div>
+            <div class="col border mx-3 rounded p-3">
+                <h4>The Dojo</h4>
+                <p>Go to the Dojo and earn no gold! But you would have trained and gain insight on the game of gold!</p>
+                <form action="/dojo" method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="get_gold" value="{{ random.randint }} "/>
+                    <input type="hidden" name="work" value="house"/>
+                    <input type="hidden" name="time_cost" value="1"/>
+                    <input type="submit" class="btn btn-warning" value="Find Your Potential!" style="display:{{ request.session.end_game }}"/>
+                </form>
+            </div>
+            <div class="col border mx-3 rounded p-3">
+                <h4>Casino</h4>
+                <p>Risk it for the biscuit! You could win 100! Be weary, a loss of your gold may come. Be glorious!</p>
+                <form action="/casino" method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="get_gold" value="{{ random.randint }} "/>
+                    <input type="hidden" name="work" value="Casino"/>
+                    <input type="hidden" name="time_cost" value="1"/>
+                    <input type="submit" class="btn btn-warning" value="Risk It!" style="display:{{ request.session.end_game }}"/>
+                </form>
+            </div>
+        </div>
+        <div class="row" style="margin-top: 25px; padding: 0 25px 0 25px;">
+            <div class="col-8">
+                <h4>Activities</h4>
+                <div class="overflow-auto border" style="height:150px; width:500px;">
+                    <ul>
+                    {% for a in request.session.game_history reversed %}
+                        {{a | safe}}
+                    {% endfor %}
+
+                    </ul>
+                </div>
+            </div>
+            <div class="col">
+                <form action="/reset" method="POST">
+                    {% csrf_token %}
+                    <input type="submit" class="btn btn-danger" value="Reset Game"/>
+                </form>
+            </div>
+        </div>
+    </body>
+</html>
